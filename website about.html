@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+
+<html>
+
+	<head>
+		<title>My little page</title>
+		<meta charset = "UTF-8">
+		<link rel="stylesheet" href="blueprint.css">
+		
+		<style>
+			.grid-container{
+				display:grid;
+				grid-template-columns: 50% 50%;
+				border: 1px solid black;
+				padding: 1%;
+				background-color: white;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="header">
+			<ul style="list-style-type: none; margin: 0; padding: 0; text-decoration: none;">
+				<li class="navbar"><a href="website home.html">Start</a></li>
+				<li class="navbar"><a href="website game.html">Game</a></li>
+				<li class="navbar"><a href="website T430.html">T430</a></li>
+				<li class="navbar"><a href="website Youtube.html">Youtube</a></li>
+				<li class="navbar" style="float: right;"><a href="website about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div id="header-double-agent">
+			<script type="text/javascript"> //task: push content down so it does not hide behind the navbar when not scrolling
+				var header = document.getElementById('header');
+				var header_shadow = document.getElementById('header-double-agent');
+				header_shadow.innerHTML = header.innerHTML;
+			</script>
+		</div>
+
+
+		<div id="main-grid">
+
+			<div class="sidebar">
+				<!--advertisments or some other useless stuff-->
+			</div>
+
+			<div id="mainframe">
+
+				<div id="top_part" style="background-color: aqua; padding: 2%; font-size: large;">
+					<p class="title">About</p>			
+				</div>
+
+				<div id="bottom_part" style="background-color: azure; height: 80vh;">
+					<div style="background-color: lightgray; padding: 20px; border: 2px solid black;">
+
+						<h1>Gabriel Ott</h1>
+			
+						<div class="grid-container">
+				
+							<div class="grid-item" style="font-size:large; line-height: 200%; margin-top: 5%;">
+				
+								<p>That one on the right is me! I am a dual student of Electrical Engineering and I am now in my 7th semester.</p>
+								
+								<p style="margin-top: 5%;">Find me on LinkedIn: Gabriel Ott</p>
+							</div>
+							
+							<div class="grid-item">				
+								<img style="position: relative; float: right;" src="Bewerbungsbild_bearbeitet.jpg" alt="Application picture" title="Gabriel Ott">
+							</div>
+						</div>
+						
+					</div>
+				</div>
+
+				<div id="info" style="padding: 1%;">
+					
+				</div>
+
+			</div>
+				
+			<div class="sidebar">
+				<!--advertisments or some other useless stuff-->
+			</div>
+
+		</div>
+
+
+		<div id="footer">
+			<p>Made by Gabriel Ott - all rights reserved (C)</p>
+		</div>
+
+	</body>
+
+</html>

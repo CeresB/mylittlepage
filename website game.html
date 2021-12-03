@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+
+<html>
+
+	<head>
+		<title>My little page</title>
+		<meta charset = "UTF-8">
+		<link rel="stylesheet" href="blueprint.css">		
+	</head>
+
+	<body>
+		<div id="header">
+			<ul style="list-style-type: none; margin: 0; padding: 0; text-decoration: none;">
+				<li class="navbar"><a href="website home.html">Start</a></li>
+				<li class="navbar"><a href="website game.html">Game</a></li>
+				<li class="navbar"><a href="website T430.html">T430</a></li>
+				<li class="navbar"><a href="website Youtube.html">Youtube</a></li>
+				<li class="navbar" style="float: right;"><a href="website about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div id="header-double-agent">
+			<script type="text/javascript"> //task: push content down so it does not hide behind the navbar when not scrolling
+				var header = document.getElementById('header');
+				var header_shadow = document.getElementById('header-double-agent');
+				header_shadow.innerHTML = header.innerHTML;
+			</script>
+		</div>
+
+
+		<div id="main-grid">
+
+			<div class="sidebar">
+				<!--advertisments or some other useless stuff-->
+			</div>
+
+			<div id="mainframe">
+
+				<div id="top_part" style="background-color: aqua; padding: 2%; font-size: large;">
+					<p style="font-weight: bold;">Poor Jimmy Barns is still screaming for world peace!</p>
+					<p>Keep his voice up in an increasingly hostile environment!</p>
+					<p class="smallprint">Record Score: <span style="font-weight: bold; font-size: larger;">3070</span> by developer on 26.11.2021</p>
+				</div>
+
+				<div id="bottom_part" style="background-color: azure; height: 18cm;">
+					<iframe src="Neutronstars vs suns v1.45/index.html" style="height: 100%; width: 100%;">
+					</iframe>
+				</div>
+
+				<div id="info" style="padding: 1%;">
+					<p class="smallprint">Yeah, there has once been a mobile version of this game once, but it made the players screem harder than Jimmy Barns...</p>
+					<span class="smallprint">You can play an old version of my game here: </span><a class="smallprint" href="https://minzkraut.com/static/canvas-game/" target="_blank">ClickMe</a>
+					<p></p>
+					<span class="smallprint">This program is an extension of the following tutorial: </span><a class="smallprint" href="https://www.youtube.com/watch?v=eI9idPTT0c4" target="_blank">ClickMe</a>
+					<p class="smallprint">However, for the program to work, the extensions and the code to look cleaner I had recode everything</p>
+				</div>
+
+			</div>
+				
+			<div class="sidebar">
+				<!--advertisments or some other useless stuff-->
+			</div>
+
+		</div>
+
+
+		<div id="footer">
+			<p>Made by Gabriel Ott - all rights reserved (C)</p>
+		</div>
+
+	</body>
+
+</html>

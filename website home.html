@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+
+<html>
+
+	<head>
+		<title>My little page</title>
+		<meta charset = "UTF-8">
+		<link rel="stylesheet" href="blueprint.css">		
+	</head>
+
+	<body>
+		<div id="header">
+			<ul style="list-style-type: none; margin: 0; padding: 0; text-decoration: none;">
+				<li class="navbar"><a href="website home.html">Start</a></li>
+				<li class="navbar"><a href="website game.html">Game</a></li>
+				<li class="navbar"><a href="website T430.html">T430</a></li>
+				<li class="navbar"><a href="website Youtube.html">Youtube</a></li>
+				<li class="navbar" style="float: right;"><a href="website about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div id="header-double-agent">
+			<script type="text/javascript"> //task: push content down so it does not hide behind the navbar when not scrolling
+				var header = document.getElementById('header');
+				var header_shadow = document.getElementById('header-double-agent');
+				header_shadow.innerHTML = header.innerHTML;
+			</script>
+		</div>
+
+
+		<div id="main-grid">
+
+			<div class="sidebar">
+				<!--advertisments or some other useless stuff-->
+			</div>
+
+			<div id="mainframe">
+
+				<div id="top_part" style="background-color: aqua; padding: 2%; font-size: large;">
+					<p class="title">Welcome to my little page</p>
+				</div>
+
+				<div id="bottom_part" style="background-color: azure; height: auto; padding: 0.5%;">
+					<p class="text">This page is a combined effort by CSS, JavaScript and HTML (and lots of help from w3schools.com) to deliver insights in some of my nerdy projects</p>
+					<p class="text">Use the navbar to scroll through other projects. Here I will just display a choice of mine</p>
+					<p style="padding: 1%;"></p>
+					<p class="title" style="text-decoration: underline;">Project Snowblind!</p>
+					<p class="text">Project Snowblind aims to improve object detection by cutting out structures in an image. For example, a visualization of a rectangle can be broken down to four lines and four corners - it does not matter of how many pixels it is made up, we just need to know this to deduce that it is a rectangle.</p>
+					
+					<video width="100%" height="auto" controls="controls">
+						<source src="Snowblind explanation film.mp4" type="video/mp4">
+						Get a new browser - this one does no show videos
+					</video>
+				</div>
+
+				<div id="info" style="padding: 0%;">
+					<p class="text">Apart from the explanation video I coded the whole process in Octave 4.4.1 and wrote the following essay about it</p>
+					<iframe src="Digital Media term project.pdf#toolbar=0" style="width: 100%; height: 30cm;"></iframe>
+				</div>
+
+			</div>
+				
+			<div class="sidebar">
+				<!--advertisments or some other useless stuff-->
+			</div>
+
+		</div>
+
+
+		<div id="footer">
+			<p>Made by Gabriel Ott - all rights reserved (C)</p>
+		</div>
+
+	</body>
+
+</html>
