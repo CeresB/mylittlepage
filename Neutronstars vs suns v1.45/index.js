@@ -1,67 +1,53 @@
+//fetch elemts from HTML
 const canvas = document.getElementById('mainCanvas');			//the one which should be invisible
+const scoreEl = document.getElementById('scoreEl');
+const bigScoreEl = document.getElementById('bigScoreEl');
+const startGameBtn = document.getElementById('startGameBtn');
+const muteMusicBtn = document.getElementById('muteMusicBtn');
+const highscoreEl = document.getElementById('highscoreEl');
 
+//not necessary, jQuery deals with these two
+// const showHighscoreBtn = document.getElementById('showHighscoreBtn');
+// const returnBtn = document.getElementById('returnBtn');
+
+//const forceMobileBtn = document.getElementById('forceMobileBtn');
+const modelEl = document.getElementById('modelEl');
+const joyContainer = document.getElementById('joystickContainer');
+
+//make buffer-canvas
 var bufferCanvas = document.createElement('canvas');	//the one we actually use in the end
 bufferCanvas.width = innerWidth;
 bufferCanvas.height = innerHeight;
 
+//get contexts
 const c = canvas.getContext('2d'); //API von dem canvas, genannt context
 var bufferC = bufferCanvas.getContext('2d');
 
-//connect scoreEl-variable from http-document to this Javascript-file
-const scoreEl = document.getElementById('scoreEl');
-const bigScoreEl = document.getElementById('bigScoreEl');
-
-const startGameBtn = document.getElementById('startGameBtn');
-const muteMusicBtn = document.getElementById('muteMusicBtn');
-const forceMobileBtn = document.getElementById('forceMobileBtn');
-
-const modelEl = document.getElementById('modelEl');
-const joyContainer = document.getElementById('joystickContainer');
-
-//global variables which can be changed
-const tolerance = 5;	//the enemy must come close to player-radius - tolerance
-var spawnrate = 1;	//enemy-spawns per second (start value)
-const friction = 0.985;	//determines how fast the particles fade out and decellerate
-const player_min_speed = 0.2; 	//min speed when moving, not when stationary
-const player_max_speed = 6;
-const player_speed_acceleration = 1.1;
-const player_active_decelleration = 0.9;
-const player_passive_decelleration = 0.97;
-const new_score_to_life_param = 2;
-const volume_inc_player = 314;	//10*pi, change in volume when player gets hit
-const volume_inc = 3*314;		//30*pi, change in volume when enemy gets hit
-
-var max_radius = 50;	//max-radius of enemies
-var min_radius = 5;		//min radius of enemies
-var game_speed = 0.5;	//determines how fast the enemies move
-var player_projectile_speed = 5;
-var shoot_frequency = 200;	//all x miliseconds one shot
-var score = 0;
-var shadow_score = 0;	//score since the last time a life was added
-var score_to_new_life = 250;
-var max_particle_lifetime = 5;
-
-//sounds
-var playsounds = true;
-const background_sound = new Audio("background_music.mp3"); // buffers automatically when created
-background_sound.loop = true;
-background_sound.volume = 0.5;
-const hit_sound_src = "hit_sound.mp3";
-const shot_sound_src = "shot_sound.mp3";
-const enemy_death_sound_src = "enemy_death.wav";
-const player_hit_sound_src = "player_hit.wav";
-const player_death_sound_src = "player_death.mp3";
-const start_sound_src = "start_sound.wav";
-
-var hit_sound;
-var shot_sound;
-var enemy_death_sound;
-var player_hit_sound;
-var player_death_sound;
 
 //images
-const player_img = document.createElement('img');
-player_img.src = 'player img.png';
+var player_img = document.createElement('img');
+player_img.src = 'images/player img.png';
+var instructions = new Image();
+instructions.src = 'images/instructions.jpg';
+var scale_factor = 1;	//scales all the objects and the introduction picture, will be set later
+
+
+//sounds
+const background_sound = new Audio("sounds/background_music.mp3"); // buffers automatically when created
+background_sound.loop = true;
+background_sound.volume = 0.5;
+const hit_sound_src = "sounds/hit_sound.mp3";
+const shot_sound_src = "sounds/shot_sound.mp3";
+const enemy_death_sound_src = "sounds/enemy_death.wav";
+const player_hit_sound_src = "sounds/player_hit.wav";
+const player_death_sound_src = "sounds/player_death.mp3";
+const start_sound_src = "sounds/start_sound.wav";
+const freeze_src = "sounds/freeze.wav";
+const explosion_src = "sounds/explosion.wav";
+const invincible_src = "sounds/invincible.wav";
+const machine_gun_src = "sounds/machine-gun.wav";
+
+var hit_sound, shot_sound, enemy_death_sound, player_hit_sound, player_death_sound, invincible_sound, freeze_sound, explosion_sound, machine_gun_sound;
 
 //load music pieces from memory or storage?
 //uncomment the following lines for local use and commend the 4 lines below in
@@ -92,23 +78,48 @@ fetch(hit_sound_src)
 	   .then(function(blob) {
 		fileBlob_player_hit_sound=URL.createObjectURL(blob);
 		   new Audio(fileBlob_player_hit_sound); // forces a request for the blob
+		});
+   var fileBlob_freeze_sound;
+   fetch(player_hit_sound_src)
+	   .then(function(response) {return response.blob()})
+	   .then(function(blob) {
+		fileBlob_freeze_sound=URL.createObjectURL(blob);
+		   new Audio(fileBlob_freeze_sound); // forces a request for the blob
+		});
+   var fileBlob_explosion_sound;
+   fetch(player_hit_sound_src)
+	   .then(function(response) {return response.blob()})
+	   .then(function(blob) {
+		fileBlob_explosion_sound=URL.createObjectURL(blob);
+		   new Audio(fileBlob_explosion_sound); // forces a request for the blob
+		});
+   var fileBlob_invincible_sound;
+   fetch(player_hit_sound_src)
+	   .then(function(response) {return response.blob()})
+	   .then(function(blob) {
+		fileBlob_invincible_sound=URL.createObjectURL(blob);
+		   new Audio(fileBlob_invincible_sound); // forces a request for the blob
+		});
+	  var fileBlob_machine_gun_sound;
+   fetch(player_hit_sound_src)
+	   .then(function(response) {return response.blob()})
+	   .then(function(blob) {
+		fileBlob_machine_gun_sound=URL.createObjectURL(blob);
+		   new Audio(fileBlob_machine_gun_sound); // forces a request for the blob
 	});
-	/*
-var fileBlob_hit_sound = hit_sound_src;
-var fileBlob_shot_sound = shot_sound_src;
-var fileBlob_enemy_death_sound = enemy_death_sound_src;
-var fileBlob_player_hit_sound = player_hit_sound_src;
-*/
 
-//images
-var instructions = new Image();
-instructions.src = 'instructions.jpg';
-var scale_factor = 1;	//scales alle the projectiles and the introduction picture
+// var fileBlob_hit_sound = hit_sound_src;
+// var fileBlob_shot_sound = shot_sound_src;
+// var fileBlob_enemy_death_sound = enemy_death_sound_src;
+// var fileBlob_player_hit_sound = player_hit_sound_src;
+// var fileBlob_freeze_sound = freeze_src;
+// var fileBlob_explosion_sound = explosion_src;
+// var fileBlob_invincible_sound = invincible_src;
+// var fileBlob_machine_gun_sound = machine_gun_src;
 
 //global variables which should not be messed with
-var player, projectiles, enemies, particles; //array which keeps track of all the objects
+var player, projectiles, enemies, particles, powerups; //array which keeps track of all the objects
 var spawnloop, shoot_loop;
-var spawninterval = 1000;
 var animationId;
 var pointerX = 0;
 var pointerY = 0;
@@ -119,7 +130,6 @@ var keyD = false;
 var framewindow = 0;	//distance in time to the last frame
 var time_last_frame = 0;
 var time_this_frame = 0;
-var number_of_past_frames = 10;	//for motion blur
 var game_mode = 1; 	//0 = stop, 1 = waiting for start, 2 = running
 
 
@@ -292,7 +302,71 @@ class Player extends Projectile {
 		this.max_pos = {x: innerWidth, y: innerHeight};
 		this.min_pos = {x: 0, y: 0};
 		this.moveallow = 1;
+		this.invincibility = false;
+		this.shoot_frequency = default_shoot_frequency;
 	};
+
+	powerupHandler(powerup_type){
+		clearTimeout(powerup_timeout);
+
+		switch (powerup_type){
+			case 0: //invincibility
+				this.invincibility = true;
+				player_img.src = 'images/player img invincible.png';
+
+				invincible_sound = new Audio(fileBlob_invincible_sound);
+				invincible_sound.volume = 1;
+				invincible_sound.play();
+				break;
+			case 1: //2x shooting speed
+				//this.shoot_frequency /= 2;
+				//this.change_shooting(this.shoot_frequency);
+				this.change_shooting(default_shoot_frequency/2);
+				player_img.src = 'images/player img double dmg.png';
+
+				machine_gun_sound = new Audio(fileBlob_machine_gun_sound);
+				machine_gun_sound.volume = 1;
+				machine_gun_sound.play();
+				break;
+			case 2: //freeze enemies
+				enemies.forEach((enemy, enemy_index) => {
+					enemy.frozen = true;
+				});
+				player_img.src = 'images/player img freeze.png';
+
+				freeze_sound = new Audio(fileBlob_freeze_sound);
+				freeze_sound.volume = 1;
+				freeze_sound.play();
+				break;
+		}		
+
+		powerup_timeout=setTimeout(function() {
+			//this.sth does not work here, because some time passed the pc looses reference
+
+			// switch (powerup_type){
+			// 	case 0: //vincibility
+			// 		player.invincibility = false;
+			// 		//invincible_sound.pause();
+			// 		break;
+			// 	case 1: //1x shooting speed
+			// 		player.change_shooting(default_shoot_frequency);
+			// 		break;
+			// 	case 2:	//defreeze enemies
+			// 		enemies.forEach((enemy, enemy_index) => {
+			// 			enemy.frozen = false;
+			// 		});
+			// 		break;
+			// }
+
+			player.invincibility = false;
+			player.change_shooting(default_shoot_frequency);
+			enemies.forEach((enemy, enemy_index) => {
+				enemy.frozen = false;
+			});
+
+			player_img.src = 'images/player img.png';
+		}, powerup_duration);
+	}
 
 	drawpos(pos, opague){
 		bufferC.beginPath();
@@ -303,7 +377,7 @@ class Player extends Projectile {
 		//bufferC.fill();	//so that we don't just have an infinitely thin line
 		bufferC.globalAlpha = 1;
 		
-		//this is the one line which ist just special for player
+		//these lines are special for player
 		bufferC.drawImage(player_img, this.x-this.radius, this.y-this.radius, this.radius*2, this.radius*2);
 	};
 
@@ -329,6 +403,20 @@ class Player extends Projectile {
 		shot_sound = new Audio(fileBlob_shot_sound);
 		shot_sound.volume = 0.1;
 		shot_sound.play();
+	}
+
+	auto_shooting(shoot_frequency){
+		console.log(shoot_frequency);
+		shoot_loop = setInterval(() =>{
+			if(document.visibilityState == 'visible'){			
+				this.shoot();
+			}		
+		}, shoot_frequency);
+	}
+
+	change_shooting(new_frequency){
+		clearInterval(shoot_loop);
+		this.auto_shooting(new_frequency);
 	}
 
 	update_velocity(){	//update player velocity
@@ -398,8 +486,10 @@ class Player extends Projectile {
 
 	got_hit(){
 		//console.log(this);
-
-		if(this.lives > 1){
+		if (this.invincibility == true){
+			//do nothing
+		}
+		else if(this.lives > 1){
 			//play sound
 			player_hit_sound = new Audio(fileBlob_player_hit_sound);
 			player_hit_sound.volume = 0.6;
@@ -452,25 +542,34 @@ class Enemy extends Projectile {
 		//small enemies fast, bigger ones slower:
 		this.velocity_modifier = velocity_modifier;
 		this.original_radius = radius;
+		this.frozen = false;
 	};
 
 	update(){
 		//it makes no sense to draw the old position of the slow moving enemies
-		if (this.velocity_modifier >= 1){	//since enemies spawn with 0 velocity their total speed depends just on this modifier
-			this.draw(1)
+		if (this.velocity_modifier >= 1 || this.frozen == true){	//since enemies spawn with 0 velocity their total speed depends just on this modifier
+			if(this.frozen == true){
+				this.draw(0.1);
+			}
+			else {				
+				this.draw(1);
+			}
 		}
 		else{
 			this.drawpos({x: this.x, y: this.y}, 1);
 		}
-		//update velocity since player can move
-		var angle_enemy = Math.atan2(player.y - this.y, player.x - this.x);
-		this.velocity = {
-			x: Math.cos(angle_enemy)*this.velocity_modifier,
-			y: Math.sin(angle_enemy)*this.velocity_modifier
-		}
-		//update position
-		this.x += this.velocity.x*framewindow;
-		this.y += this.velocity.y*framewindow;
+
+		if(this.frozen == false){
+			//update velocity since player can move
+			var angle_enemy = Math.atan2(player.y - this.y, player.x - this.x);
+			this.velocity = {
+				x: Math.cos(angle_enemy)*this.velocity_modifier,
+				y: Math.sin(angle_enemy)*this.velocity_modifier
+			}
+			//update position
+			this.x += this.velocity.x*framewindow;
+			this.y += this.velocity.y*framewindow;	
+		}				
 	};
 
 	got_hit(enemy_index){
@@ -511,7 +610,6 @@ class Enemy extends Projectile {
 			enemy_death_sound.play();
 		}
 
-		//remove this enemy from the enemies array
 		particle_explosion(this.x, this.y, this.radius*2, this.color, 3);
 		//projectile explosion needed as well
 
@@ -519,33 +617,84 @@ class Enemy extends Projectile {
 			projectile_explosion(this.x, this.y, (this.original_radius*this.original_radius)/500 - 1, player.color, 2);	//-1 so that the little ones do not have this feature
 		}, 0)
 
+		//remove this enemy from the enemies array
 		enemies.splice(enemy_index, 1);
 		//console.log('enemy destroyed');
 	}
 }
 
+class Powerup{
+	constructor(){
+		this.x = Math.random()*canvas.width;
+		this.y = Math.random()*canvas.height;
+		this.radius = 20;
+		this.color = 'white';
+		this.type = Math.round(Math.random()*3);
+	}
+
+	update(){
+		this.drawpos();
+	}
+
+	drawpos(){
+		bufferC.beginPath();
+		bufferC.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);	//Position des Stifts, dreht von 0 bis 360 grad, dreht nicht gegen den Uhrzeigersinn
+		bufferC.fillStyle = this.color;
+		bufferC.fill();	//so that we don't just have an infinitely thin line
+	};
+
+	got_hit(powerup_index){
+		
+		console.log(this.type);
+
+		if (this.type == 3){
+			projectile_explosion(this.x, this.y, 10, this.color, 3);
+
+			explosion_sound = new Audio(fileBlob_explosion_sound);
+			explosion_sound.volume = 1;
+			explosion_sound.play();
+		}
+		else{
+			player.powerupHandler(this.type);
+		}
+
+		this.death(powerup_index);
+	}
+
+	death(powerup_index){
+		powerups.splice(powerup_index, 1);
+	}
+}
 
 
+var spawninterval_bak = spawninterval;
+var powerup_timeout;
 
 function init(){	//resets everything so that the game can start
+	//maybe window got resized --> get the parameters anew!
 	canvas.width = innerWidth;
 	canvas.height = innerHeight;
 	scale_factor = (canvas.width/4)/instructions.width;	//instructions soll 1/4 der screenbreite einnehmen
+
 	player = new Player(canvas.width/2, canvas.height/2, 20, 'white', {x: 0, y: 0}, 3);	//3 lives
+
+	//reset changeables to default values
 	projectiles = [];
 	particles = [];
-	spawnrate = 1;
 	enemies = [];
+	powerups = [];
+	spawninterval = spawninterval_bak;
 	score = 0;
 	shadow_score = 0;
 	scoreEl.innerHTML = score;
-	max_particle_lifetime = 50;
+
 	game_mode = 1;	//equals waiting for start
-	
+
 	if (playsounds){
 		background_sound.currentTime = 0;	//reset to start
 		background_sound.play();
 	}
+
 	animate();		//animate loops trough itself and draws the screen
 	//console.log(scale_factor);
 
@@ -553,26 +702,43 @@ function init(){	//resets everything so that the game can start
 		game_mode = 2;	//game is running
 		spawnEnemies();
 		//enemies.push(new Enemy(100, 100, 30, `hsl(${Math.random()*360}, 50%, 50%)`, {x:0,y:0}, (max_radius/30)*game_speed));	//test-enemy
-		auto_shooting();		
+		player.change_shooting(default_shoot_frequency);
+		spawnPowerups();		
 	}, 3000);
+}
+
+var loop;
+var spawnPowerupsInterval;
+
+function spawnPowerups(){
+	spawnPowerupsLoop=setInterval(() => {
+		powerups.push(new Powerup());
+	}, powerup_spawnrate);
 }
 
 function spawnEnemies() {
 	
 	spawnloop = setInterval(() =>{
-		if(document.visibilityState == 'visible'){
-			for(let i=0; i<spawnrate; i++){
-				spawn_enemy();
-			}
-			spawnrate += 0.01;	
-		}		
-	}, spawninterval);
+		clearInterval(loop);
+		spawnInTime(spawninterval);
+		
+		//protection against negative value
+		if (spawninterval - difficulty_increase > 1){			
+			spawninterval -= difficulty_increase;
+		}
+		else{
+			spawninterval = 1;
+		}
+		//console.log(spawninterval);
+	}, 1000);
 }
 
-//determine users mouse-position
-document.onmousemove = function(event){
-	pointerX = event.pageX;
-	pointerY = event.pageY;
+function spawnInTime(interval){
+	loop = setInterval(() => {
+	if(document.visibilityState == 'visible'){
+		spawn_enemy();
+	}
+	}, interval);
 }
 
 function spawn_enemy(){
@@ -596,17 +762,11 @@ function spawn_enemy(){
 		//console.log(enemies);
 }
 
-function auto_shooting(){
-	shoot_loop = setInterval(() =>{
-		if(document.visibilityState == 'visible'){			
-			player.shoot();
-		}		
-	}, shoot_frequency);
-}
-
 function end_game(player){
 	clearInterval(spawnloop);
+	clearInterval(loop);
 	clearInterval(shoot_loop);
+	clearInterval(spawnPowerupsLoop);
 
 	//reset game mode
 	game_mode = 0;
@@ -615,7 +775,6 @@ function end_game(player){
 	player.moveallow = 0;
 	
 	//spectacular explosion
-	max_particle_lifetime = 100;
 	particle_explosion(player.x, player.y, 25, player.color, 1);
 	
 	//kill all enemies
@@ -655,14 +814,18 @@ function particle_explosion(posx, posy, amount, color, max_size){
 
 function projectile_explosion(posx, posy, amount, color, max_size){
 	for (let i = 0; i < amount; i++){
-		//want same speed, but still random directions
+		//want same speed, but still random directions		
+		let speed = Math.random();
+
 		let signx = (Math.random() - 0.5);
 		signx = signx/Math.abs(signx);
 
 		let signy = (Math.random() - 0.5);
 		signy = signy/Math.abs(signy);
 
-		let speed = Math.random();
+		//split speed-budget on x and y axis
+		let speedx = Math.random()/speed;
+		let speedy = Math.sqrt(Math.abs(speed*speed-speedx*speedx));
 
 		//Math.random()*(max_radius - min_radius) + min_radius;
 
@@ -671,7 +834,7 @@ function projectile_explosion(posx, posy, amount, color, max_size){
 			posy, 
 			max_size, //radius
 			color, 
-			{x: signx*speed*3, y: signy*(1 - speed)*3}));	//x+y = 3, total speed must be the same
+			{x: signx*speedx*3, y: signy*speedy*3}));
 	}
 }
 
@@ -680,6 +843,12 @@ function inc_score(value){
 	scoreEl.innerHTML = score;
 }
 
+function frame_timer(){
+	time_last_frame = time_this_frame;
+	time_this_frame = performance.now();	//in ms
+	framewindow = (time_this_frame - time_last_frame)/16;	//the value of 16 is so that on developers computer framewindow is roughly one	
+	//console.log(framewindow);
+}
 
 function animate(){
 
@@ -690,13 +859,7 @@ function animate(){
 	}
 	else{
 		//update frame-timer		
-		time_last_frame = time_this_frame;
-		time_this_frame = performance.now();	//in ms
-		framewindow = (time_this_frame - time_last_frame)/16;	//the value of 16 is so that on developers computer framewindow is roughly one
-		shoot_frequency = 200/framewindow;	//so that player has the same amount of projectiles and enemies on a slower device than on a faster one
-		spawninterval = 1000/framewindow;
-		//console.log(framewindow);
-
+		frame_timer();
 
 			//do all the drawing
 			bufferC.fillStyle = 'rgba(0, 0, 0)';	//draw black rectangle to erase whole screen
@@ -707,6 +870,24 @@ function animate(){
 			}
 			
 			//all the updates include drawing so do them first
+			powerups.forEach((powerup, powerup_index) => {
+				powerup.update();
+
+				//collision with projectiles detection
+				projectiles.forEach((projectile, projectile_index) =>{
+					const distance = Math.hypot(projectile.x - powerup.x, projectile.y - powerup.y);
+			
+					if (distance <= (powerup.radius + projectile.radius)){ //then its a hit!
+						//remove projectile
+						projectile.death(projectile_index);
+						//deal with enemy & score
+						powerup.got_hit(powerup_index);	
+						//create particle effects
+						particle_explosion(projectile.x, projectile.y, powerup.radius*2, powerup.color, 5);						
+					}
+				});
+			});
+
 			player.player_update();
 	
 			particles.forEach((particle, particle_index) => {		//in {} is the function which aplies
@@ -765,15 +946,12 @@ function animate(){
 }
 
 
-//something should happen when you click. 2 arguments: type of event and function
-//event is the event-object with its properties like position of the mouse when clicking
-addEventListener('click', (event) =>{
 
-//use powerup on click?
-
-});
-
-
+//determine users mouse-position
+document.onmousemove = function(event){
+	pointerX = event.pageX;
+	pointerY = event.pageY;
+}
 
 //move player with WASD
 addEventListener("keydown", onKeyDown, false);
@@ -825,7 +1003,7 @@ startGameBtn.addEventListener('click', (event) =>{
 
 	if(touchDevice){
 		joyContainer.style.display = 'flex';
-		instructions.src = "instructions_mobile.jpg";
+		instructions.src = "images/instructions_mobile.jpg";
 	}
 	else{
 		clearInterval(touch_check);
@@ -852,14 +1030,41 @@ muteMusicBtn.addEventListener('click', (event) =>{
 	}
 })
 
-forceMobileBtn.addEventListener('click', (event) =>{
+// forceMobileBtn.addEventListener('click', (event) =>{
 
-	if(touchDevice == false){
-		touchDevice = true;
-		forceMobileBtn.style.background = 'red';
+// 	if(touchDevice == false){
+// 		touchDevice = true;
+// 		forceMobileBtn.style.background = 'red';
+// 	}
+// 	else{
+// 		touchDevice = false;
+// 		forceMobileBtn.style.background = 'gray';
+// 	}
+// })
+
+//just to give jQuery a chance and use it to read JSON. Inspired by: https://w3schools.com/jquery/ajax_getjson.asp
+$("#showHighscoreBtn").click(
+	function(){
+		$('#highscoreEl').show();
+		$('#modelEl').hide();
+
+		$("#highscoreList").empty();
+
+	$.getJSON("highscore_list.json", function(result){
+		$("#highscoreList").append("<table>");
+
+			$.each(result, function(i, field){
+				$("#highscoreList").append("<tr><td>" + field.name + "</td>" + "<td>" + field.score + "</td></tr>");
+			});
+			
+		$("#highscoreList").append("</table>");
+		});
 	}
-	else{
-		touchDevice = false;
-		forceMobileBtn.style.background = 'gray';
+);
+
+$("#returnBtn").click(
+	function(){
+		$('#highscoreEl').hide();
+		$('#modelEl').show();
 	}
-})
+);

@@ -1,0 +1,12 @@
+{
+    "item1": {"name": "Tim", "score": 3946, "playerID": 0},
+    "item2": {"name": "Mark", "score": 3717, "playerID": 0},
+    "item3": {"name": "Vader", "score": 3632, "playerID": 0},
+    "item4": {"name": "Luke", "score": 2639, "playerID": 0},
+    "item5": {"name": "Shepard", "score": 2178, "playerID": 0},
+    "item6": {"name": "John", "score": 1513, "playerID": 0},
+    "item7": {"name": "Cortana", "score": 1324, "playerID": 0},
+    "item8": {"name": "501", "score": 501, "playerID": 0},
+    "item9": {"name": "IG-88", "score": 467, "playerID": 0},
+    "item10":{"name": "DerWixxer", "score": 108, "playerID": 0}
+    }

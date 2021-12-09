@@ -51,6 +51,9 @@
 		top: 50%;
 		transform: translate(-50%, -50%);
 	}
+	table {
+		text-align: left;
+	}
 </style>
 
 
@@ -72,8 +75,19 @@
 	<p style="font-size: xxx-large; font-weight: bold;" id="bigScoreEl">0</p>
 
 	<button style="border-radius: 20%; padding: 10%; margin-top: 10%; background-color: rgb(13, 87, 199); font-size: x-large;" id="startGameBtn">New Game</button>
-			
+
+	<button style="border-radius: 20%; padding: 10%; margin-top: 10%; background-color: rgb(25, 38, 58); font-size: large;" id="showHighscoreBtn">Show Highscores</button>
+	
 	<button style="border-radius: 20%; padding: 10%; margin-top: 10%; background-color: grey;" id="muteMusicBtn">Mute Music</button>
+
+</div>
+
+<div class="box" id="highscoreEl" style="position: fixed; display: none">
+	<div id="highscoreList">
+		<p>testtext</p>
+	</div>
+
+	<button style="border-radius: 20%; padding: 10%; margin-top: 10%; background-color: rgb(25, 38, 58); font-size: large;" id="returnBtn">Return</button>
 
 </div>
 
@@ -81,9 +95,13 @@
 
 <!-- support program for shrinking animation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js" integrity="sha512-eP6ippJojIKXKO8EPLtsUMS+/sAGHGo1UN/38swqZa1ypfcD4I0V/ac5G3VzaHfDaklFmQLEs51lhkkVaqg60Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- jQuery support-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 <!-- support program for joysticks for mobile use-->
 <script src="joy.js"></script>
 
 <!-- My actual program -->
+<script type="text/javascript" src="./settings.js"></script>
 <script type="text/javascript" src="./index.js"></script>
+
