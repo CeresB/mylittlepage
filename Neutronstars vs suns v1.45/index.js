@@ -38,14 +38,14 @@ background_sound.loop = true;
 background_sound.volume = 0.5;
 const hit_sound_src = "sounds/hit_sound.mp3";
 const shot_sound_src = "sounds/shot_sound.mp3";
-const enemy_death_sound_src = "sounds/enemy_death.wav";
-const player_hit_sound_src = "sounds/player_hit.wav";
+const enemy_death_sound_src = "sounds/enemy_death.mp3";
+const player_hit_sound_src = "sounds/player_hit.mp3";
 const player_death_sound_src = "sounds/player_death.mp3";
-const start_sound_src = "sounds/start_sound.wav";
-const freeze_src = "sounds/freeze.wav";
-const explosion_src = "sounds/explosion.wav";
-const invincible_src = "sounds/invincible.wav";
-const machine_gun_src = "sounds/machine-gun.wav";
+const start_sound_src = "sounds/start_sound.mp3";
+const freeze_src = "sounds/freeze.mp3";
+const explosion_src = "sounds/explosion.mp3";
+const invincible_src = "sounds/invincible.mp3";
+const machine_gun_src = "sounds/machine-gun.mp3";
 
 var hit_sound, shot_sound, enemy_death_sound, player_hit_sound, player_death_sound, invincible_sound, freeze_sound, explosion_sound, machine_gun_sound;
 
@@ -80,28 +80,28 @@ fetch(hit_sound_src)
 		   new Audio(fileBlob_player_hit_sound); // forces a request for the blob
 		});
    var fileBlob_freeze_sound;
-   fetch(player_hit_sound_src)
+   fetch(freeze_src)
 	   .then(function(response) {return response.blob()})
 	   .then(function(blob) {
 		fileBlob_freeze_sound=URL.createObjectURL(blob);
 		   new Audio(fileBlob_freeze_sound); // forces a request for the blob
 		});
    var fileBlob_explosion_sound;
-   fetch(player_hit_sound_src)
+   fetch(explosion_src)
 	   .then(function(response) {return response.blob()})
 	   .then(function(blob) {
 		fileBlob_explosion_sound=URL.createObjectURL(blob);
 		   new Audio(fileBlob_explosion_sound); // forces a request for the blob
 		});
    var fileBlob_invincible_sound;
-   fetch(player_hit_sound_src)
+   fetch(invincible_src)
 	   .then(function(response) {return response.blob()})
 	   .then(function(blob) {
 		fileBlob_invincible_sound=URL.createObjectURL(blob);
 		   new Audio(fileBlob_invincible_sound); // forces a request for the blob
 		});
 	  var fileBlob_machine_gun_sound;
-   fetch(player_hit_sound_src)
+   fetch(machine_gun_src)
 	   .then(function(response) {return response.blob()})
 	   .then(function(blob) {
 		fileBlob_machine_gun_sound=URL.createObjectURL(blob);
@@ -304,10 +304,14 @@ class Player extends Projectile {
 		this.moveallow = 1;
 		this.invincibility = false;
 		this.shoot_frequency = default_shoot_frequency;
+
+		//powerups timeouts
+		this.powerup_invincibility_Timer = 0;
+		this.powerup_shooting_speed_Timer = 0;
+		this.powerup_freeze_Timer = 0;
 	};
 
 	powerupHandler(powerup_type){
-		clearTimeout(powerup_timeout);
 
 		switch (powerup_type){
 			case 0: //invincibility
@@ -317,6 +321,7 @@ class Player extends Projectile {
 				invincible_sound = new Audio(fileBlob_invincible_sound);
 				invincible_sound.volume = 1;
 				invincible_sound.play();
+				this.powerup_invincibility_Timeout();
 				break;
 			case 1: //2x shooting speed
 				//this.shoot_frequency /= 2;
@@ -327,6 +332,7 @@ class Player extends Projectile {
 				machine_gun_sound = new Audio(fileBlob_machine_gun_sound);
 				machine_gun_sound.volume = 1;
 				machine_gun_sound.play();
+				this.powerup_shooting_speed_Timeout();
 				break;
 			case 2: //freeze enemies
 				enemies.forEach((enemy, enemy_index) => {
@@ -337,36 +343,45 @@ class Player extends Projectile {
 				freeze_sound = new Audio(fileBlob_freeze_sound);
 				freeze_sound.volume = 1;
 				freeze_sound.play();
+				this.powerup_freeze_Timeout();
 				break;
-		}		
+		}
+	}
 
-		powerup_timeout=setTimeout(function() {
-			//this.sth does not work here, because some time passed the pc looses reference
+	powerup_invincibility_Timeout(){
+		clearTimeout(player.powerup_invincibility_Timer);
 
-			// switch (powerup_type){
-			// 	case 0: //vincibility
-			// 		player.invincibility = false;
-			// 		//invincible_sound.pause();
-			// 		break;
-			// 	case 1: //1x shooting speed
-			// 		player.change_shooting(default_shoot_frequency);
-			// 		break;
-			// 	case 2:	//defreeze enemies
-			// 		enemies.forEach((enemy, enemy_index) => {
-			// 			enemy.frozen = false;
-			// 		});
-			// 		break;
-			// }
+		player.powerup_invincibility_Timer = setTimeout(function() {			
 
-			player.invincibility = false;
-			player.change_shooting(default_shoot_frequency);
+			player.invincibility = false;			
+			player_img.src = 'images/player img.png';
+
+		}, powerup_duration);
+	};
+
+	powerup_freeze_Timeout(){
+		clearTimeout(player.powerup_freeze_Timer);
+
+		player.powerup_freeze_Timer = setTimeout(function() {			
+
 			enemies.forEach((enemy, enemy_index) => {
 				enemy.frozen = false;
-			});
-
+			});			
 			player_img.src = 'images/player img.png';
+
 		}, powerup_duration);
-	}
+	};
+
+	powerup_shooting_speed_Timeout(){
+		clearTimeout(player.powerup_shooting_speed_Timer);
+
+		player.powerup_shooting_speed_Timer = setTimeout(function() {
+			
+			player.change_shooting(default_shoot_frequency);			
+			player_img.src = 'images/player img.png';
+
+		}, powerup_duration);
+	};
 
 	drawpos(pos, opague){
 		bufferC.beginPath();
@@ -399,10 +414,12 @@ class Player extends Projectile {
 		}
 
 		projectiles.push(new Projectile(player.x, player.y, 5, 'white', {x: Math.cos(angle)*player_projectile_speed, y: Math.sin(angle)*player_projectile_speed}, 1));
-				
-		shot_sound = new Audio(fileBlob_shot_sound);
-		shot_sound.volume = 0.1;
-		shot_sound.play();
+			
+		if(game_mode == 2){	//no sounds if game is not running
+			shot_sound = new Audio(fileBlob_shot_sound);
+			shot_sound.volume = 0.1;
+			shot_sound.play();
+		}
 	}
 
 	auto_shooting(shoot_frequency){
@@ -668,7 +685,6 @@ class Powerup{
 
 
 var spawninterval_bak = spawninterval;
-var powerup_timeout;
 
 function init(){	//resets everything so that the game can start
 	//maybe window got resized --> get the parameters anew!
