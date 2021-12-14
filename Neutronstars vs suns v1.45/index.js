@@ -423,7 +423,7 @@ class Player extends Projectile {
 	}
 
 	auto_shooting(shoot_frequency){
-		console.log(shoot_frequency);
+		//console.log(shoot_frequency);
 		shoot_loop = setInterval(() =>{
 			if(document.visibilityState == 'visible'){			
 				this.shoot();
@@ -504,7 +504,8 @@ class Player extends Projectile {
 	got_hit(){
 		//console.log(this);
 		if (this.invincibility == true){
-			//do nothing
+			//enemy will die in contact --> that counts as a full kill --> increase score!			
+			inc_score(10);
 		}
 		else if(this.lives > 1){
 			//play sound
@@ -534,6 +535,24 @@ class Player extends Projectile {
 		player_death_sound = new Audio(player_death_sound_src);
 		player_death_sound.volume = 0.6;
 		player_death_sound.play();
+
+		//reset powerup-effekts on player. Clear timer manually and execute their undo-functions
+		clearTimeout(this.powerup_shooting_speed_Timer);
+		player.change_shooting(default_shoot_frequency);
+		//machine_gun_sound.pause();	//does not work when machine_gun_sound does not exist
+		//machine_gun_sound.currentTime = 0;
+
+		clearTimeout(this.powerup_freeze_Timer);
+		enemies.forEach((enemy, enemy_index) => {
+			enemy.frozen = false;
+		});
+		//freeze_sound.pause();
+		//freeze_sound.currentTime = 0;
+
+		clearTimeout(this.powerup_invincibility_Timer);
+		player.invincibility = false;
+		//invincible_sound.pause();
+		//invincible_sound.currentTime = 0;
 		
 		//cancel game
 		this.radius = 1;
@@ -662,7 +681,7 @@ class Powerup{
 
 	got_hit(powerup_index){
 		
-		console.log(this.type);
+		//console.log(this.type);
 
 		if (this.type == 3){
 			projectile_explosion(this.x, this.y, 10, this.color, 3);
@@ -690,9 +709,10 @@ function init(){	//resets everything so that the game can start
 	//maybe window got resized --> get the parameters anew!
 	canvas.width = innerWidth;
 	canvas.height = innerHeight;
-	scale_factor = (canvas.width/4)/instructions.width;	//instructions soll 1/4 der screenbreite einnehmen
+	scale_factor = (canvas.width/4)/(instructions.width*(326/436));	//instructions should take up 1/4 of screen width. To remain compatible factor old_instructions_width/new_instructions width
 
 	player = new Player(canvas.width/2, canvas.height/2, 20, 'white', {x: 0, y: 0}, 3);	//3 lives
+	player_img.src = 'images/player img.png';
 
 	//reset changeables to default values
 	projectiles = [];
@@ -850,7 +870,7 @@ function projectile_explosion(posx, posy, amount, color, max_size){
 			posy, 
 			max_size, //radius
 			color, 
-			{x: signx*speedx*3, y: signy*speedy*3}));
+			{x: signx*speedx*5, y: signy*speedy*5}));
 	}
 }
 
