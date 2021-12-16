@@ -1,0 +1,73 @@
+<!-- <!DOCTYPE html> makes bigScoreEl=null for some reason-->
+
+<html>
+	<head>
+		<title>Neutronstars vs suns</title>
+		
+		<!--disable user zoom so that you can actually use the controllers on mobile-->
+		<meta charset="UTF-8" name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale = 1.0, user-scalable = no">
+
+		<!-- support program for shrinking animation -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js" integrity="sha512-eP6ippJojIKXKO8EPLtsUMS+/sAGHGo1UN/38swqZa1ypfcD4I0V/ac5G3VzaHfDaklFmQLEs51lhkkVaqg60Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<!-- jQuery support-->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+		<link rel="stylesheet" href="blueprint.css">
+
+	</head>		
+</html>
+
+		<!-- Ein Kommentar. -->
+<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
+<!-- styles are in blueprint.css -->
+<style type="text/css">	
+
+</style>
+
+
+<div class="flex" id="joystickContainer">
+	<div id="joy1Div" style="width: 25%; height: 45%; position: fixed; bottom: 0%; left: 0%;"></div>
+
+	<div id="joy2Div" style="width: 25%; height: 45%; position: fixed; bottom: 0%; right: 0%;"></div>
+</div>
+
+
+<div style="font-size: large; color: white; position: fixed; margin: 0.2%;;">
+	<span>Score: </span>
+	<span id ="scoreEl">0</span>
+</div>
+
+
+<div class="box" id="modelEl">
+	<p style="font-size: medium; color: gray;">Your Score:</p>
+	<p style="font-size: xxx-large; font-weight: bold;" id="bigScoreEl">0</p>
+
+	<button style="border-radius: 20%; padding: 10%; margin-top: 10%; background-color: rgb(13, 87, 199); font-size: x-large;" id="startGameBtn">New Game</button>
+
+	<button style="border-radius: 20%; padding: 10%; margin-top: 10%; background-color: rgb(25, 38, 58); font-size: large;" id="showHighscoreBtn">Show Highscores</button>
+	
+	<button style="border-radius: 20%; padding: 10%; margin-top: 10%; background-color: grey;" id="muteMusicBtn">Mute Music</button>
+
+</div>
+
+<div class="box" id="highscoreEl" style="position: fixed; display: none">
+	<div id="highscoreList">
+		<p>testtext</p>
+	</div>
+
+	<button style="border-radius: 20%; padding: 10%; margin-top: 10%; background-color: rgb(25, 38, 58); font-size: large;" id="returnBtn">Return</button>
+
+</div>
+
+<canvas id="mainCanvas"></canvas>
+
+
+
+<!-- support program for joysticks for mobile use-->
+<script src="joy.js"></script>
+
+<!-- My actual program -->
+<script type="text/javascript" src="./settings.js"></script>
+<script type="text/javascript" src="./index.js"></script>
+
